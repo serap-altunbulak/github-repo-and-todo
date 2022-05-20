@@ -31,37 +31,50 @@ html,
 }
 
 /* Hide scrollbar for Chrome, Safari and Opera */
-.child::-webkit-scrollbar {
+.scrollable::-webkit-scrollbar {
   display: none;
 }
 
 /* Hide scrollbar for IE, Edge and Firefox */
-.child {
+.scrollable {
   -ms-overflow-style: none;
   /* IE and Edge */
   scrollbar-width: none;
   /* Firefox */
 }
 
+a,
+a:hover,
+a:focus,
+a:active {
+  text-decoration: none;
+  color: inherit;
+}
+
 .parent {
+  margin-top: 20px;
   width: 85%;
   display: flex;
   font-family: arial, sans-serif;
-
+  max-height: 100%;
 }
 
 .child {
   width: 50%;
-  margin: 0;
-  padding: 0;
-  overflow: scroll;
+  margin: 0 0 30px 0;
+  padding: 10px;
+  max-height: min-content;
 }
 
 .item {
-  margin: 15px;
+  margin: 0;
+  padding: 15px;
   height: 100%;
   background: #eeeeee;
   min-height: 500px;
   border-style: solid;
+}
 
+.scrollable {
+  overflow: scroll;
 }

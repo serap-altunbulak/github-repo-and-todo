@@ -53,20 +53,20 @@ function App() {
         <div className='App'>
             <div className='parent'>
                 <div className='child'>
-                    <div className='item'>
+                    <div className='item scrollable'>
                         <Typography
                             style={{ padding: '20px', fontSize: '50px' }}
                             variant='h2'
                         >
                             My Github Repos
                         </Typography>
-                        <div className='center'>
+                        <div style={{ margin: '10px' }}>
                             <Github />
                         </div>
                     </div>
                 </div>
                 <div className='child'>
-                    <div className='item'>
+                    <div className='item scrollable'>
                         <Typography
                             style={{ padding: '20px', fontSize: '50px' }}
                             variant='h2'

@@ -56,7 +56,10 @@ function Github() {
     }, []);
     return (
         <div>
-            <Card sx={{ maxWidth: 345 }}>
+            <Card
+                sx={{ maxWidth: 345, marginBottom: '25px' }}
+                className='center'
+            >
                 <CardActionArea>
                     <CardMedia
                         component='img'
@@ -70,13 +73,19 @@ function Github() {
                         </Typography>
                     </CardContent>
                 </CardActionArea>
-                <CardActions>
-                    <Button size='small' color='primary' variant='outlined'>
+                <CardActions className='center'>
+                    <Button
+                        fullWidth={true}
+                        size='small'
+                        color='primary'
+                        variant='outlined'
+                        onClick={repoDataURL}
+                    >
                         List My Repos
                     </Button>
                 </CardActions>
             </Card>
-            {repoData}
+            <Typography style={{ textAlign: 'left' }}>{repoData}</Typography>
         </div>
     );
 }
