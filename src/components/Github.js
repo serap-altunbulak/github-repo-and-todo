@@ -1,93 +1,77 @@
-import { useEffect, useState } from 'react';
-import Typography from '@material-ui/core/Typography';
-import {
-    Button,
-    Card,
-    CardActionArea,
-    CardActions,
-    CardMedia,
-    CardContent,
-} from '@mui/material';
+import React, { Component } from 'react';
+import axios from 'axios';
+import debounce from 'lodash/debounce';
+import Repo from './Repo';
+import { Button, TextField } from '@material-ui/core';
 
-function Github() {
-    const [avatarURL, setAvatarURL] = useState();
-    const [githubUsername, setGitHubUsername] = useState();
-    const [repoData, setRepoData] = useState();
-
-    const repoDataURL = async () => {
-        //Get repo data about github user
-        await fetch('https://api.github.com/users/serap-altunbulak/repos')
-            .then((res) => res.json())
-            .then(
-                (result) => {
-                    console.log(36, result);
-                    const list = result.map((item) => (
-                        <div className='text-center'>
-                            <a
-                                target='_blank'
-                                href={item.svn_url}
-                                rel='noreferrer'
-                            >
-                                {item.name}
-                            </a>
-                        </div>
-                    ));
-                    setRepoData(list);
-                },
-                (error) => {
-                    console.log(error);
-                }
-            );
+class Github extends Component {
+    constructor(props) {
+        super(props);
+        this.state = { username: '', repos: [], errorMessage: '' };
+    }
+    handleChange = (event) => {
+        this.setState({ username: event.target.value }, () => {
+            this.getRepos();
+        });
     };
 
-    useEffect(() => {
-        fetch('https://api.github.com/users/serap-altunbulak')
-            .then((res) => res.json())
-            .then(
-                (result) => {
-                    console.log(result);
-                    setAvatarURL(result.avatar_url);
-                    setGitHubUsername(result.login);
-                },
-                (error) => {
-                    console.log(error);
-                }
-            );
-    }, []);
-    return (
-        <div>
-            <Card
-                sx={{ maxWidth: 345, marginBottom: '25px' }}
-                className='center'
-            >
-                <CardActionArea>
-                    <CardMedia
-                        component='img'
-                        height='275'
-                        image={avatarURL}
-                        alt='avatar'
+    getRepos = debounce(() => {
+        const repoUrl = `https://api.github.com/users/${this.state.username}/repos`;
+        axios
+            .get(repoUrl)
+            .then((responses) => {
+                const repos = responses.data.map(
+                    ({ name, language, html_url, description }) => {
+                        return {
+                            name,
+                            language,
+                            html_url,
+                            description,
+                        };
+                    }
+                );
+                this.setState({ repos });
+            })
+            .catch((error) => {
+                console.log(`inside getrepos error: ${error}`);
+                this.setState({
+                    errorMessage: error.response.statusText,
+                });
+            });
+    }, 1000);
+
+    displayRepos() {
+        return this.state.repos.map((repo) => (
+            <Repo key={repo.name} repo={repo} />
+        ));
+    }
+
+    render() {
+        return (
+            <React.Fragment>
+                <div className='github-form' onClick={this.getRepos}>
+                    <TextField
+                        fullWidth
+                        variant='filled'
+                        autoComplete='off'
+                        label='Enter your github username'
+                        type='text'
+                        name='repo'
+                        value={this.state.username}
+                        onChange={this.handleChange}
                     />
-                    <CardContent>
-                        <Typography gutterBottom variant='h5' component='div'>
-                            {githubUsername}
-                        </Typography>
-                    </CardContent>
-                </CardActionArea>
-                <CardActions className='center'>
-                    <Button
-                        fullWidth={true}
-                        size='small'
-                        color='primary'
-                        variant='outlined'
-                        onClick={repoDataURL}
-                    >
-                        List My Repos
-                    </Button>
-                </CardActions>
-            </Card>
-            <Typography style={{ textAlign: 'left' }}>{repoData}</Typography>
-        </div>
-    );
+                    <Button type='button'>List My Repos</Button>
+                </div>
+
+                {this.state.repos.length > 0 && (
+                    <div>{this.displayRepos()}</div>
+                )}
+                {this.state.repos.length === 0 && (
+                    <div>{this.state.errorMessage}</div>
+                )}
+            </React.Fragment>
+        );
+    }
 }
 
 export default Github;
