@@ -60,7 +60,7 @@ function App() {
                         >
                             My Github Repos
                         </Typography>
-                        <div style={{ margin: '10px' }}>
+                        <div>
                             <Github />
                         </div>
                     </div>

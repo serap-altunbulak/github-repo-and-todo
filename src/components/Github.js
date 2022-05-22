@@ -21,16 +21,18 @@ class Github extends Component {
             .get(repoUrl)
             .then((responses) => {
                 const repos = responses.data.map(
-                    ({ name, language, html_url, description }) => {
+                    ({ name, language, html_url, description, topics }) => {
                         return {
                             name,
                             language,
                             html_url,
                             description,
+                            topics,
                         };
                     }
                 );
                 this.setState({ repos });
+                console.log(responses.data);
             })
             .catch((error) => {
                 console.log(`inside getrepos error: ${error}`);
@@ -49,7 +51,7 @@ class Github extends Component {
     render() {
         return (
             <React.Fragment>
-                <div className='github-form' onClick={this.getRepos}>
+                <div className='github-form' onSubmit={this.getRepos}>
                     <TextField
                         fullWidth
                         variant='filled'
@@ -60,7 +62,7 @@ class Github extends Component {
                         value={this.state.username}
                         onChange={this.handleChange}
                     />
-                    <Button type='button'>List My Repos</Button>
+                    <Button type='submit'>List My Repos</Button>
                 </div>
 
                 {this.state.repos.length > 0 && (
